@@ -10,6 +10,7 @@
   $(document).ready(function(){
   	$('body').roadblocked({
   		'devices' : { 
+  			macintosh : { img:'iphone.jpg', link:'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8'},
   			iphone : { img:'iphone.jpg', link:'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8'},
   			ipod : { img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8' },
   			android : { img:'android.jpg', link: 'https://market.android.com/details?id=com.wapo.slate.android&hl=en' },
@@ -17,7 +18,8 @@
   		},
   		'imgPath' : 'demo_images',
   		'lifetime' : 1,
-  		'overlayBackgroundColor' : '#000',
+  		'blackoutColor' : '#666',
+  		'blackoutOpacity' : 0.75,
   		'dismissLabel' : 'dismiss_label.jpg',
   		'dismissLabelAlign' : 'center',
   		'dismissLabelHeight' : '7.5%',

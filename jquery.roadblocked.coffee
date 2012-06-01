@@ -26,7 +26,7 @@ Requires: jquery, jquery-cookie
         link = interstitial['link']
         @placeInterstitial(dismiss, content, link, detectedDevice)
         setBody(on)
-        setCookie(@options.lifetime, @options.campaignName, @options.path)
+        #setCookie(@options.lifetime, @options.campaignName, @options.path)
       # return this
       @
     
@@ -50,18 +50,33 @@ Requires: jquery, jquery-cookie
      
     # Append interstitial element to target
     @placeInterstitial = (dismiss, content, link, device) =>
+      blackout = $('<div\>', { id: 'roadblocked-blackout' })
+      blackout.css
+        'background-color' : @options.blackoutColor
+        'opacity' : @options.blackoutOpacity
+        '-moz-opacity' : @options.blackoutOpacity
+        'filter' : 'alpha(opacity=' + (@options.blackoutOpacity * 100) + ')'
+        'width' : '100%'
+        'height' : '100%'
+        'top' : '0'
+        'left' : '0'
+        'position' : 'fixed'
+        'z-index' : '100'
+        'margin' : '0'
+        'display' : 'block'
+
       container = $('<div\>', { id: 'roadblocked-container', class: device })
       container.html('')
       container.css
-        'background-color' : @options.overlayBackgroundColor
         'top' : '0'
         'left' : '0'
         'height' : '100%'
         'width' : '100%'
         'position' : 'fixed'
-        'z-index' : '100'
+        'z-index' : '101'
         'margin' : '0'
         'display' : 'block'
+      $('body').prepend(blackout)
       $('body').prepend(container)
       $('#roadblocked-container').prepend(dismiss)
       if @options.dismissPlacement == 'top'
@@ -93,7 +108,6 @@ Requires: jquery, jquery-cookie
           'height' : height
           'width' : '90%'
           'margin' : '0 auto'
-          'background-color' : "#{@options.overlayBackgroundColor}"
           'text-align' : "#{@options.dismissLabelAlign}"
           'background-image' : "url('#{@options.imgPath}/#{@options.dismissLabel}')"
           'background-position' : "#{@options.dismissLabelAlign}"
@@ -146,7 +160,7 @@ Requires: jquery, jquery-cookie
   $.roadblocked.defaults =
     imgPath : 'images' # defaults to local images dir for plugin
     retnaPath : 'images/retna' # retna versions of files in subfolder retna
-    overlayBackgroundColor : '#000'
+    overlayBackgroundColor : 'transparent'
     dismissLabelHeight : '7.5%' # sets relative percentage of screen
     dismissLabelAlign : 'center'  # left, center, right (defaults right)
     dismissPlacement : 'top' # top or bottom (default top)
