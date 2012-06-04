@@ -26,7 +26,7 @@ Requires: jquery, jquery-cookie
         link = interstitial['link']
         @placeInterstitial(dismiss, content, link, detectedDevice)
         setBody(on)
-        #setCookie(@options.lifetime, @options.campaignName, @options.path)
+        setCookie(@options.lifetime, @options.campaignName, @options.path)
       # return this
       @
     
@@ -76,6 +76,7 @@ Requires: jquery, jquery-cookie
         'z-index' : '101'
         'margin' : '0'
         'display' : 'block'
+        'cursor':'pointer'
       $('body').prepend(blackout)
       $('body').prepend(container)
       $('#roadblocked-container').prepend(dismiss)
@@ -87,13 +88,13 @@ Requires: jquery, jquery-cookie
         $('#dismiss-bar').after(content)
       # set tap regions to links
       $('#dismiss-bar').click(->
-        $('#roadblocked-container').hide()
+        $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast')
         killBody()
       )
       $('#inter-content').click(->
         if link?
           window.location = "#{link}"
-          $('#roadblocked-container').hide()
+          $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast')
           killBody()
       )
          

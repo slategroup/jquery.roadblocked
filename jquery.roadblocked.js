@@ -92,7 +92,8 @@ Requires: jquery, jquery-cookie
           'position': 'fixed',
           'z-index': '101',
           'margin': '0',
-          'display': 'block'
+          'display': 'block',
+          'cursor': 'pointer'
         });
         $('body').prepend(blackout);
         $('body').prepend(container);
@@ -105,13 +106,13 @@ Requires: jquery, jquery-cookie
           $('#dismiss-bar').after(content);
         }
         $('#dismiss-bar').click(function() {
-          $('#roadblocked-container').hide();
+          $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast');
           return killBody();
         });
         return $('#inter-content').click(function() {
           if (link != null) {
             window.location = "" + link;
-            $('#roadblocked-container').hide();
+            $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast');
             return killBody();
           }
         });
