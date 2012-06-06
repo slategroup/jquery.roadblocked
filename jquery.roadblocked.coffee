@@ -19,16 +19,30 @@ Requires: jquery, jquery-cookie
       jQuery.cookie('probe','landed')
       cookiesEnabled = true if jQuery.cookie('probe')?
       detectedDevice = scanDevice @options.devices
+      if cookiesEnabled
+        for own campaign, data of @options
+          if jQuery.cookie("#{campaign}") != 'done'
+            for trigger in data.triggers
+              if trigger.device? and trigger.device == detectedDevice
+                #Activate
+                setCookie(data.options.lifetime, campaign, data.options.path)
+                return @
+              else if trigger.condition? and trigger.condition()
+                #Activate
+                setCookie(data.options.lifetime, campaign, data.options.path)
+                return @
+
+      return @
       # if specified device present and enabled but not yet cookied, proceed
-      if (interstitial = @options.devices[detectedDevice]) and cookiesEnabled and (jQuery.cookie("#{@options.campaignName}") != 'done')
-        dismiss = buildDismissUI()
-        content = @setContent(interstitial)
-        link = interstitial['link']
-        @placeInterstitial(dismiss, content, link, detectedDevice)
-        setBody(on)
-        setCookie(@options.lifetime, @options.campaignName, @options.path)
+      #  if (interstitial = @options.devices[detectedDevice]) and cookiesEnabled and (jQuery.cookie("#{@options.campaignName}") != 'done')
+      #  dismiss = buildDismissUI()
+      #  content = @setContent(interstitial)
+      #  link = interstitial['link']
+      #  @placeInterstitial(dismiss, content, link, detectedDevice)
+      #  setBody(on)
+      #  setCookie(@options.lifetime, @options.campaignName, @options.path)
       # return this
-      @
+      #@
     
     # Check current user's device and return with match
     scanDevice = (devices) =>
