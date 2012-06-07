@@ -19,24 +19,30 @@
       this.$el.data("roadblocked", this);
       this.init = function() {
         var campaign, cookiesEnabled, data, detectedDevice, trigger, _i, _len, _ref, _ref2;
-        _this.options = $.extend({}, $.roadblocked.defaults, options);
+        _this.options = $.extend({}, options);
         jQuery.cookie('probe', 'landed');
         if (jQuery.cookie('probe') != null) cookiesEnabled = true;
-        detectedDevice = scanDevice(_this.options.devices);
         if (cookiesEnabled) {
+          console.log(_this.options);
           _ref = _this.options;
           for (campaign in _ref) {
             if (!__hasProp.call(_ref, campaign)) continue;
             data = _ref[campaign];
             if (jQuery.cookie("" + campaign) !== 'done') {
+              detectedDevice = scanDevice(data.options.devices);
+              console.log(campaign);
+              console.log(data);
               _ref2 = data.triggers;
               for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
                 trigger = _ref2[_i];
+                console.log(trigger);
+                console.log("" + (trigger.device != null) + " " + trigger.device + " " + detectedDevice);
                 if ((trigger.device != null) && trigger.device === detectedDevice) {
-                  activate(data, trigger);
+                  console.log("" + trigger.device + " passed trigger check");
+                  _this.activate(campaign, data, trigger);
                   return _this;
                 } else if ((trigger.condition != null) && trigger.condition()) {
-                  activate(data, trigger);
+                  _this.activate(campaign, data, trigger);
                   return _this;
                 }
               }
@@ -45,22 +51,19 @@
         }
         return _this;
       };
-      this.activate = function(data, interstitial) {
+      this.activate = function(campaign, data, interstitial) {
         var content, dismiss, link;
-        dismiss = buildDismissUI();
-        content = _this.setContent(interstitial);
+        dismiss = buildDismissUI(data.options);
+        content = _this.setContent(data.options, interstitial);
         link = interstitial['link'];
-        _this.placeInterstitial(dismiss, content, link, 'empty-class');
+        _this.placeInterstitial(data.options, dismiss, content, link, 'macintosh');
         setBody(true);
         return setCookie(data.options.lifetime, campaign, data.options.path);
       };
       scanDevice = function(devices) {
-        var d, device, device_agent, featured_list, present, _fn, _i, _len;
+        var device, device_agent, featured_list, present, _fn, _i, _len;
         present = '';
-        featured_list = [];
-        for (d in devices) {
-          featured_list.push(d);
-        }
+        featured_list = devices;
         device_agent = navigator.userAgent.toLowerCase();
         _fn = function(device) {
           if (device_agent.indexOf(device) > -1) {
@@ -77,16 +80,16 @@
         }
         return present;
       };
-      this.placeInterstitial = function(dismiss, content, link, device) {
+      this.placeInterstitial = function(options, dismiss, content, link, device) {
         var blackout, container;
         blackout = $('<div\>', {
           id: 'roadblocked-blackout'
         });
         blackout.css({
-          'background-color': _this.options.blackoutColor,
-          'opacity': _this.options.blackoutOpacity,
-          '-moz-opacity': _this.options.blackoutOpacity,
-          'filter': 'alpha(opacity=' + (_this.options.blackoutOpacity * 100) + ')',
+          'background-color': options.blackoutColor,
+          'opacity': options.blackoutOpacity,
+          '-moz-opacity': options.blackoutOpacity,
+          'filter': 'alpha(opacity=' + (options.blackoutOpacity * 100) + ')',
           'width': '100%',
           'height': '100%',
           'top': '0',
@@ -115,9 +118,9 @@
         $('body').prepend(blackout);
         $('body').prepend(container);
         $('#roadblocked-container').prepend(dismiss);
-        if (_this.options.dismissPlacement === 'top') {
+        if (options.dismissPlacement === 'top') {
           $('#dismiss-bar').after(content);
-        } else if (_this.options.dismissPlacement === 'bottom') {
+        } else if (options.dismissPlacement === 'bottom') {
           $('#dismiss-bar').before(content);
         } else {
           $('#dismiss-bar').after(content);
@@ -134,11 +137,11 @@
           }
         });
       };
-      buildDismissUI = function() {
+      buildDismissUI = function(options) {
         var dismissLabel, height, self;
-        dismissLabel = _this.options.dismissLabel;
+        dismissLabel = options.dismissLabel;
         if (typeof dismissLabel === 'string') {
-          height = (parseFloat(_this.options.dismissLabelHeight) / 100) * $(window).height();
+          height = (parseFloat(options.dismissLabelHeight) / 100) * $(window).height();
           self = $('<div\>', {
             id: 'dismiss-bar'
           });
@@ -146,9 +149,9 @@
             'height': height,
             'width': '90%',
             'margin': '0 auto',
-            'text-align': "" + _this.options.dismissLabelAlign,
-            'background-image': "url('" + _this.options.imgPath + "/" + _this.options.dismissLabel + "')",
-            'background-position': "" + _this.options.dismissLabelAlign,
+            'text-align': "" + options.dismissLabelAlign,
+            'background-image': "url('" + options.imgPath + "/" + options.dismissLabel + "')",
+            'background-position': "" + options.dismissLabelAlign,
             'background-repeat': 'no-repeat',
             'background-size': 'contain'
           });
@@ -159,21 +162,21 @@
           return dismissLabel;
         }
       };
-      this.setContent = function(interstitial) {
+      this.setContent = function(options, interstitial) {
         var height, self;
         if (interstitial['img'] != null) {
           self = $('<div\>', {
             id: 'inter-content'
           });
-          if (typeof _this.options.dismissLabel === 'string') {
-            height = (100 - parseFloat(_this.options.dismissLabelHeight)).toString() + '%';
+          if (typeof options.dismissLabel === 'string') {
+            height = (100 - parseFloat(options.dismissLabelHeight)).toString() + '%';
           } else {
             height = '100%';
           }
           self.css({
             'height': height,
             'width': '100%',
-            'background-image': "url('" + _this.options.imgPath + "/" + interstitial['img'] + "')",
+            'background-image': "url('" + options.imgPath + "/" + interstitial['img'] + "')",
             'background-position': 'top',
             'background-repeat': 'no-repeat',
             'background-size': 'contain'

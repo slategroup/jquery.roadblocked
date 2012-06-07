@@ -9,21 +9,26 @@
   <script type='text/javascript'>
   $(document).ready(function(){
   	$('body').roadblocked({
-  		'devices' : { 
-  			macintosh : { img:'iphone.jpg', link:'javascript:void(0)'},
-  			iphone : { img:'iphone.jpg', link:'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8'},
-  			ipod : { img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8' },
-  			android : { img:'android.jpg', link: 'https://market.android.com/details?id=com.wapo.slate.android&hl=en' },
-  			ipad : { img:'ipad.jpg', link: 'http://itunes.apple.com/us/app/slate-magazine/id384914589?mt=8' }
-  		},
-  		'imgPath' : 'demo_images',
-  		'lifetime' : 0,
-  		'blackoutColor' : '#666',
-  		'blackoutOpacity' : 0.75,
-  		'dismissLabel' : 'dismiss_label.jpg',
-  		'dismissLabelAlign' : 'center',
-  		'dismissLabelHeight' : '7.5%',
-  		'campaignName' : 'sl-mag-interstitial'
+        // For legacy reasons, a "devices" object is necessary
+        'tr-mag-interstitial-2': {
+            'options': {
+                'devices': [ 'macintosh', 'iphone' ],
+  		        'imgPath' : 'demo_images',
+  		        'lifetime' : 0,
+  		        'blackoutColor' : '#666',
+  		        'blackoutOpacity' : 0.75,
+  		        'dismissLabel' : 'dismiss_label.jpg',
+  		        'dismissLabelAlign' : 'center',
+  		        'dismissLabelHeight' : '7.5%'
+            },
+            'triggers': [
+                { 'device' : 'macintosh', img:'iphone.jpg', link:'javascript:void(0)'},
+  			    { 'device' : 'iphone', img:'iphone.jpg', link:'http://itunes.apple.com/us/app/the-root/id385608483?mt=8'},
+  			    { 'device': 'ipod', img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/the-root/id385608483?mt=8' },
+  			    { 'device': 'android', img:'android.jpg', link: 'https://market.android.com/details?id=com.wapo.theroot.android&hl=en' },
+  			    { 'device': 'ipad', img:'ipad.jpg', link: 'http://itunes.apple.com/us/app/the-root-for-ipad/id409360103?mt=8' }
+  		    ]
+        },
   	});
   });
   </script>		

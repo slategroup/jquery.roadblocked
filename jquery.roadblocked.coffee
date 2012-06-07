@@ -14,48 +14,45 @@ Requires: jquery, jquery-cookie
     @$el.data "roadblocked", @
     
     @init = =>
-      @options = $.extend {}, $.roadblocked.defaults, options
+      @options = $.extend {}, options
       # First, test to see if browser cookies enabled
       jQuery.cookie('probe','landed')
       cookiesEnabled = true if jQuery.cookie('probe')?
-      detectedDevice = scanDevice @options.devices
+
       if cookiesEnabled
+        console.log(@options);
         for own campaign, data of @options
           if jQuery.cookie("#{campaign}") != 'done'
+            detectedDevice = scanDevice data.options.devices
+            console.log(campaign);
+            console.log(data);
             for trigger in data.triggers
+              console.log trigger
+              console.log "#{trigger.device?} #{trigger.device} #{detectedDevice}"
               if trigger.device? and trigger.device == detectedDevice
-                activate(data, trigger)
+                console.log "#{trigger.device} passed trigger check"
+                @activate(campaign, data, trigger)
                 return @
               else if trigger.condition? and trigger.condition()
-                activate(data, trigger)
+                @activate(campaign, data, trigger)
                 return @
 
       return @
-      # if specified device present and enabled but not yet cookied, proceed
-      #  if (interstitial = @options.devices[detectedDevice]) and cookiesEnabled and (jQuery.cookie("#{@options.campaignName}") != 'done')
-      #  dismiss = buildDismissUI()
-      #  content = @setContent(interstitial)
-      #  link = interstitial['link']
-      #  @placeInterstitial(dismiss, content, link, detectedDevice)
-      #  setBody(on)
-      #  setCookie(@options.lifetime, @options.campaignName, @options.path)
-      # return this
-      #@
 
-    @activate = (data, interstitial) =>
-      dismiss = buildDismissUI()
-      content = @setContent(interstitial)
+    @activate = (campaign, data, interstitial) =>
+      dismiss = buildDismissUI(data.options)
+      content = @setContent(data.options, interstitial)
       link = interstitial['link']
-      @placeInterstitial(dismiss, content, link, 'empty-class')
+      @placeInterstitial(data.options, dismiss, content, link, 'macintosh')
       setBody(on)
       setCookie(data.options.lifetime, campaign, data.options.path)
 
     # Check current user's device and return with match
     scanDevice = (devices) =>
       present = ''
-      featured_list = []
-      for d of devices
-        featured_list.push(d)
+      featured_list = devices
+      #for d of devices
+      #  featured_list.push(d)
       device_agent = navigator.userAgent.toLowerCase()
       for device in featured_list
         do (device) ->
@@ -69,13 +66,13 @@ Requires: jquery, jquery-cookie
       return present
      
     # Append interstitial element to target
-    @placeInterstitial = (dismiss, content, link, device) =>
+    @placeInterstitial = (options, dismiss, content, link, device) =>
       blackout = $('<div\>', { id: 'roadblocked-blackout' })
       blackout.css
-        'background-color' : @options.blackoutColor
-        'opacity' : @options.blackoutOpacity
-        '-moz-opacity' : @options.blackoutOpacity
-        'filter' : 'alpha(opacity=' + (@options.blackoutOpacity * 100) + ')'
+        'background-color' : options.blackoutColor
+        'opacity' : options.blackoutOpacity
+        '-moz-opacity' : options.blackoutOpacity
+        'filter' : 'alpha(opacity=' + (options.blackoutOpacity * 100) + ')'
         'width' : '100%'
         'height' : '100%'
         'top' : '0'
@@ -100,9 +97,9 @@ Requires: jquery, jquery-cookie
       $('body').prepend(blackout)
       $('body').prepend(container)
       $('#roadblocked-container').prepend(dismiss)
-      if @options.dismissPlacement == 'top'
+      if options.dismissPlacement == 'top'
         $('#dismiss-bar').after(content)
-      else if @options.dismissPlacement == 'bottom'
+      else if options.dismissPlacement == 'bottom'
         $('#dismiss-bar').before(content)
       else
         $('#dismiss-bar').after(content)
@@ -119,19 +116,19 @@ Requires: jquery, jquery-cookie
       )
          
     # Build dismiss bar
-    buildDismissUI = =>
-      dismissLabel = @options.dismissLabel
+    buildDismissUI = (options) =>
+      dismissLabel = options.dismissLabel
       # if message is text, build standard label
       if typeof dismissLabel == 'string'
-        height =  (parseFloat(@options.dismissLabelHeight)/100) * $(window).height()
+        height =  (parseFloat(options.dismissLabelHeight)/100) * $(window).height()
         self = $('<div\>', { id: 'dismiss-bar' })
         self.css
           'height' : height
           'width' : '90%'
           'margin' : '0 auto'
-          'text-align' : "#{@options.dismissLabelAlign}"
-          'background-image' : "url('#{@options.imgPath}/#{@options.dismissLabel}')"
-          'background-position' : "#{@options.dismissLabelAlign}"
+          'text-align' : "#{options.dismissLabelAlign}"
+          'background-image' : "url('#{options.imgPath}/#{options.dismissLabel}')"
+          'background-position' : "#{options.dismissLabelAlign}"
           'background-repeat' : 'no-repeat'
           'background-size' : 'contain'
         return self 
@@ -142,18 +139,18 @@ Requires: jquery, jquery-cookie
         return dismissLabel 
     
     # Set interstitial content   
-    @setContent = (interstitial) =>
+    @setContent = (options, interstitial) =>
       if interstitial['img']?
         self = $('<div\>', { id: 'inter-content' })
         # if dismiss label is image, use height config value to calculate diff
-        if typeof @options.dismissLabel == 'string'
-          height = (100 - parseFloat @options.dismissLabelHeight).toString() + '%'
+        if typeof options.dismissLabel == 'string'
+          height = (100 - parseFloat options.dismissLabelHeight).toString() + '%'
         else
           height = '100%'
         self.css
           'height' : height
           'width' : '100%'
-          'background-image' : "url('#{@options.imgPath}/#{interstitial['img']}')"
+          'background-image' : "url('#{options.imgPath}/#{interstitial['img']}')"
           'background-position' : 'top'
           'background-repeat' : 'no-repeat'
           'background-size' : 'contain'
