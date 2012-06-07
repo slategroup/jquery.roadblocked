@@ -32,6 +32,7 @@ Requires: jquery, jquery-cookie
           link = interstitial['link'];
           _this.placeInterstitial(dismiss, content, link, detectedDevice);
           setBody(true);
+          setCookie(_this.options.lifetime, _this.options.campaignName, _this.options.path);
         }
         return _this;
       };
@@ -105,7 +106,7 @@ Requires: jquery, jquery-cookie
         } else {
           $('#dismiss-bar').after(content);
         }
-        $('#dismiss-bar').click(function() {
+        $('#dismiss-bar, #roadblocked-blackout').click(function() {
           $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast');
           return killBody();
         });
@@ -170,11 +171,11 @@ Requires: jquery, jquery-cookie
       };
       setBody = function(state, device) {
         if (state === true) {
-          return $('body').css('position', 'fixed');
+          return $('body').css('overflow', 'hidden');
         }
       };
       killBody = function() {
-        return $('body').css('position', 'static');
+        return $('body').css('overflow', 'scroll');
       };
       setCookie = function(lifetime, campaign, path_dir) {
         return jQuery.cookie("" + campaign, 'done', {

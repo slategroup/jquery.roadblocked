@@ -7,25 +7,25 @@
   <script type='text/javascript' src='resources/jquery.cookie.js'></script>
   <script type='text/javascript' src='jquery.roadblocked.js'></script>
   <script type='text/javascript'>
+  /*
   $(document).ready(function(){
-  	$('body').roadblocked({
-  		'devices' : { 
-  			macintosh : { img:'iphone.jpg', link:'javascript:void(0)'},
-  			iphone : { img:'iphone.jpg', link:'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8'},
-  			ipod : { img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/slate.com/id357555242?mt=8' },
-  			android : { img:'android.jpg', link: 'https://market.android.com/details?id=com.wapo.slate.android&hl=en' },
-  			ipad : { img:'ipad.jpg', link: 'http://itunes.apple.com/us/app/slate-magazine/id384914589?mt=8' }
-  		},
-  		'imgPath' : 'demo_images',
-  		'lifetime' : 0,
-  		'blackoutColor' : '#666',
-  		'blackoutOpacity' : 0.75,
-  		'dismissLabel' : 'dismiss_label.jpg',
-  		'dismissLabelAlign' : 'center',
-  		'dismissLabelHeight' : '7.5%',
-  		'campaignName' : 'sl-mag-interstitial'
-  	});
-  });
+        
+        $('body').roadblocked({
+      		'devices' : { 
+      			macintosh : { img:'mys-interstitial.jpg', 
+      			link:'#'
+      			},
+      		},
+      		'imgPath' : 'http://matt.dev.slate.com/Sites/_sandbox/',
+      		'lifetime' : 0,
+      		'blackoutColor' : '#666',
+      		'blackoutOpacity' : 0.75,
+      		'dismissLabel' : 'dismiss_label.jpg',
+      		'dismissLabelAlign' : 'center',
+      		'dismissLabelHeight' : '7.5%',
+      		'campaignName' : 'sl-mag-interstitial'
+      	})
+  });*/
   </script>		
   <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
        Remove this if you use the .htaccess -->
@@ -41,13 +41,16 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 </head>
 <body>
-  <div>
+  <div style="width:990px;background:beige;margin:auto;height:1000px">
     <header>
       <h1>jQuery.Roadblocked Demo</h1>
       <h2>Slate Magazine Apps</h2>
+      <a href="http://www.slate.com">Go to SLATE.</a>
     </header>
-    <footer>
+    <footer>    
      <p>Created by Blaine Sheldon</p>
+     <script src="mys-interstitial.js"></script>
+     <!--<script src="http://localhost:4502/etc/designs/slate/js/mys-interstitial.js"></script>-->
     </footer>
   </div>
 </body>

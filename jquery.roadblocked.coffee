@@ -87,7 +87,7 @@ Requires: jquery, jquery-cookie
       else
         $('#dismiss-bar').after(content)
       # set tap regions to links
-      $('#dismiss-bar').click(->
+      $('#dismiss-bar, #roadblocked-blackout').click(->
         $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast')
         killBody()
       )
@@ -144,10 +144,10 @@ Requires: jquery, jquery-cookie
         return interstitial['selector']
       
     setBody = (state, device) =>
-      if state == on then $('body').css('position','fixed')
+     if state == on then $('body').css('overflow','hidden')
       
     killBody = =>  
-      $('body').css('position','static')
+      $('body').css('overflow','scroll')
       
     setCookie = (lifetime, campaign, path_dir) ->
       jQuery.cookie("#{campaign}", 'done', { expires: lifetime, path: path_dir })
