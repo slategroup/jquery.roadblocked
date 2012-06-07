@@ -23,22 +23,16 @@
         jQuery.cookie('probe', 'landed');
         if (jQuery.cookie('probe') != null) cookiesEnabled = true;
         if (cookiesEnabled) {
-          console.log(_this.options);
           _ref = _this.options;
           for (campaign in _ref) {
             if (!__hasProp.call(_ref, campaign)) continue;
             data = _ref[campaign];
             if (jQuery.cookie("" + campaign) !== 'done') {
               detectedDevice = scanDevice(data.options.devices);
-              console.log(campaign);
-              console.log(data);
               _ref2 = data.triggers;
               for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
                 trigger = _ref2[_i];
-                console.log(trigger);
-                console.log("" + (trigger.device != null) + " " + trigger.device + " " + detectedDevice);
                 if ((trigger.device != null) && trigger.device === detectedDevice) {
-                  console.log("" + trigger.device + " passed trigger check");
                   _this.activate(campaign, data, trigger);
                   return _this;
                 } else if ((trigger.condition != null) && trigger.condition()) {
@@ -57,6 +51,9 @@
         content = _this.setContent(data.options, interstitial);
         link = interstitial['link'];
         _this.placeInterstitial(data.options, dismiss, content, link, 'macintosh');
+        if (interstitial.execute != null) {
+          interstitial.execute.call(_this.$el[0], interstitial);
+        }
         setBody(true);
         return setCookie(data.options.lifetime, campaign, data.options.path);
       };
@@ -176,11 +173,13 @@
           self.css({
             'height': height,
             'width': '100%',
-            'background-image': "url('" + options.imgPath + "/" + interstitial['img'] + "')",
             'background-position': 'top',
             'background-repeat': 'no-repeat',
             'background-size': 'contain'
           });
+          if (interstitial['img'] != null) {
+            self.css('background-image', "url('" + options.imgPath + "/" + interstitial['img'] + "')");
+          }
           return self;
         } else if (interstitial['selector'] != null) {
           interstitial['selector'].attr('id', 'inter-content');

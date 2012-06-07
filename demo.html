@@ -22,6 +22,7 @@
   		        'dismissLabelHeight' : '7.5%'
             },
             'triggers': [
+                { 'condition': function() { return true; }, img:'android.jpg', link:'javascript:void(0)', 'execute': function() { console.log("Callback happened!"); console.log(this); } },
                 { 'device' : 'macintosh', img:'iphone.jpg', link:'javascript:void(0)'},
   			    { 'device' : 'iphone', img:'iphone.jpg', link:'http://itunes.apple.com/us/app/the-root/id385608483?mt=8'},
   			    { 'device': 'ipod', img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/the-root/id385608483?mt=8' },

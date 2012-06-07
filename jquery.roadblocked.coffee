@@ -20,17 +20,17 @@ Requires: jquery, jquery-cookie
       cookiesEnabled = true if jQuery.cookie('probe')?
 
       if cookiesEnabled
-        console.log(@options);
+        #console.log(@options);
         for own campaign, data of @options
           if jQuery.cookie("#{campaign}") != 'done'
             detectedDevice = scanDevice data.options.devices
-            console.log(campaign);
-            console.log(data);
+            #console.log(campaign);
+            #console.log(data);
             for trigger in data.triggers
-              console.log trigger
-              console.log "#{trigger.device?} #{trigger.device} #{detectedDevice}"
+              #console.log trigger
+              #console.log "#{trigger.device?} #{trigger.device} #{detectedDevice}"
               if trigger.device? and trigger.device == detectedDevice
-                console.log "#{trigger.device} passed trigger check"
+                #console.log "#{trigger.device} passed trigger check"
                 @activate(campaign, data, trigger)
                 return @
               else if trigger.condition? and trigger.condition()
@@ -44,6 +44,8 @@ Requires: jquery, jquery-cookie
       content = @setContent(data.options, interstitial)
       link = interstitial['link']
       @placeInterstitial(data.options, dismiss, content, link, 'macintosh')
+      if interstitial.execute?
+        interstitial.execute.call(@$el[0], interstitial)
       setBody(on)
       setCookie(data.options.lifetime, campaign, data.options.path)
 
@@ -150,10 +152,16 @@ Requires: jquery, jquery-cookie
         self.css
           'height' : height
           'width' : '100%'
-          'background-image' : "url('#{options.imgPath}/#{interstitial['img']}')"
           'background-position' : 'top'
           'background-repeat' : 'no-repeat'
           'background-size' : 'contain'
+
+        #console.log self.css
+        #console.log interstitial
+        if interstitial['img']?
+          self.css('background-image',"url('#{options.imgPath}/#{interstitial['img']}')")
+        #console.log self.css
+
         return self 
       else if interstitial['selector']?
         interstitial['selector'].attr('id','inter-content')
