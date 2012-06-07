@@ -24,12 +24,10 @@ Requires: jquery, jquery-cookie
           if jQuery.cookie("#{campaign}") != 'done'
             for trigger in data.triggers
               if trigger.device? and trigger.device == detectedDevice
-                #Activate
-                setCookie(data.options.lifetime, campaign, data.options.path)
+                activate(data, trigger)
                 return @
               else if trigger.condition? and trigger.condition()
-                #Activate
-                setCookie(data.options.lifetime, campaign, data.options.path)
+                activate(data, trigger)
                 return @
 
       return @
@@ -43,7 +41,15 @@ Requires: jquery, jquery-cookie
       #  setCookie(@options.lifetime, @options.campaignName, @options.path)
       # return this
       #@
-    
+
+    @activate = (data, interstitial) =>
+      dismiss = buildDismissUI()
+      content = @setContent(interstitial)
+      link = interstitial['link']
+      @placeInterstitial(dismiss, content, link, 'empty-class')
+      setBody(on)
+      setCookie(data.options.lifetime, campaign, data.options.path)
+
     # Check current user's device and return with match
     scanDevice = (devices) =>
       present = ''
