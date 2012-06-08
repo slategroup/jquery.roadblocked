@@ -7,6 +7,34 @@
   <script type='text/javascript' src='resources/jquery.cookie.js'></script>
   <script type='text/javascript' src='jquery.roadblocked.js'></script>
   <script type='text/javascript'>
+
+function interstitialSignupForm() {
+    console.log('interstitialSignupForm');
+    var apikey = 'e5b9f0a1836dd061f0ebc63977483fc5-us1';
+    
+    var form_html = '<form id="interstitial-signup-form"><input type="text" name="interstitial-signup-email" id="interstitial-signup-email" /> <img id="interstitial-submit-image" src="foo.jpg" width="100" height="30" style="margin-bottom: -10px"/></form>';
+
+    var form = $(form_html).css({
+        'width': '400px',
+        'margin': 'auto',
+        'padding': '300px',
+        'background-color': 'transparent'
+    });
+
+    var submit = function() {
+        alert('Go!');
+    };
+
+    $(this).find('#inter-content').css('text-align', 'center').append(form);
+    $('#interstitial-signup-email').css({
+        'padding': '8px',
+        'border': 'solid 1px black'
+    });
+    $('#interstitial-signup-form').submit(submit);
+    $('#interstitial-submit-image').click(submit);
+    
+}
+
   $(document).ready(function(){
   	$('body').roadblocked({
         // For legacy reasons, a "devices" object is necessary
@@ -22,7 +50,22 @@
   		        'dismissLabelHeight' : '7.5%'
             },
             'triggers': [
-                { 'condition': function() { return true; }, img:'android.jpg', link:'javascript:void(0)', 'execute': function() { console.log("Callback happened!"); console.log(this); } },
+                { 'condition': function() { return true; }, 
+                  img:'android.jpg', 
+                  'execute': interstitialSignupForm
+                  // 'execute': function() { 
+                  //     console.log("Callback happened!");
+                  //     console.log(this);
+                      
+                  //     var form = $("#interstitial-content").detach().css({
+                  //         'width': '400px',
+                  //         'margin': 'auto',
+                  //         'background-color': 'white',
+                  //     });
+                      
+                  //     $(this).find('#inter-content').css('text-align', 'center').append(form);
+                  // }
+                },
                 { 'device' : 'macintosh', img:'iphone.jpg', link:'javascript:void(0)'},
   			    { 'device' : 'iphone', img:'iphone.jpg', link:'http://itunes.apple.com/us/app/the-root/id385608483?mt=8'},
   			    { 'device': 'ipod', img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/the-root/id385608483?mt=8' },
@@ -56,5 +99,169 @@
      <p>Created by Blaine Sheldon</p>
     </footer>
   </div>
+
+  <div id="interstitial-content">
+  <script src="http://downloads.mailchimp.com/js/jquery.validate.js" type="text/javascript"></script>
+<script src="http://downloads.mailchimp.com/js/jquery.form.js" type="text/javascript"></script>
+
+<script type="text/javascript">// <![CDATA[
+// delete this script tag and use a "div.mce_inline_error{ ... !important}" selector
+// or fill this in and it will be inlined when errors are generated
+var mc_custom_error_style = '';
+// ]]></script>
+<div id="theroot_interstitial_mc_signup_cont" class="theroot_mc_signup_cont">
+<form id="int-mc-embedded-subscribe-form" class="validate"
+	action="http://theroot.us1.list-manage.com/subscribe/post?u=00062d59b57547e780e364cd7&amp;id=23a72e09a8"
+	method="post">
+<div class="theroot_interstitial_mc_signup_title">
+</div>
+<div class="theroot_mc_signup" id="theroot_interstitial_mc_signup">
+   <div id="theroot_interstitial_mc_signup_inner">
+     <span>Sign up to get <em>The Root's</em> daily newsletter:</span><br />
+     <label for="int-mce-EMAIL">Email Address </label>
+     <input id="int-mce-EMAIL" class="required email" name="EMAIL" type="text" />
+     <input id="int-mc-embedded-subscribe" class="btn" name="subscribe" type="submit" value="Sign Up" />
+   </div>
+   <div id="theroot_interstitial_mc_signup_message" style="display: none">
+     &nbsp;
+   </div>
+</div>
+
+</form>
+<br class="clear-both" />
+</div>
+<script type="text/javascript">// <![CDATA[
+var fnames = new Array();var ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';var err_style = '';
+try {
+    err_style = mc_custom_error_style;
+} catch(e){
+    err_style = 'margin: 1em 0 0 0; padding: 1em 0.5em 0.5em 0.5em; background: ERROR_BGCOLOR none repeat scroll 0% 0%; font-weight: bold; float: left; z-index: 1; width: 80%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial; color: ERROR_COLOR;';
+}
+$(document).ready( function($) {
+  var mce_options = { errorClass: 'error', errorElement: 'span', errorStyle: err_style, onkeyup: function(){}, onfocusout:function(){}, onblur:function(){}  };
+  var mce_validator = $("#int-mc-embedded-subscribe-form").validate(mce_options);
+  mce_options = { url: 'http://theroot.us1.list-manage.com/subscribe/post-json?u=00062d59b57547e780e364cd7&id=23a72e09a8&c=?', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
+                beforeSubmit: function() {
+                    $('#mce_tmp_error_msg').remove();
+                    $('.datefield','#mc_embed_signup').each(
+                        function(){
+                            var txt = 'filled';
+                            var fields = new Array();
+                            var i = 0;
+                            $(':text', this).each(
+                                function(){
+                                    fields[i] = this;
+                                    i++;
+                                });
+                            $(':hidden', this).each(
+                                function(){
+                                	if ( fields[0].value=='MM' && fields[1].value=='DD' && fields[2].value=='YYYY' ) {
+                                		this.value = '';
+									} else if ( fields[0].value=='' && fields[1].value=='' && fields[2].value=='' ) {
+                                		this.value = '';
+									} else {
+	                                    this.value = fields[0].value+'/'+fields[1].value+'/'+fields[2].value;
+	                                }
+                                });
+                        });
+                    return mce_validator.form();
+                },
+                success: int_mce_success_cb
+            };
+  $('#int-mc-embedded-subscribe-form').ajaxForm(mce_options);
+
+});
+function int_mce_success_cb(resp){
+    $('#mce-success-response').hide();
+    $('#mce-error-response').hide();
+    if (resp.result=="success"){
+	    $('#theroot_interstitial_mc_signup #theroot_interstitial_mc_signup_message').css('height', $('#theroot_interstitial_mc_signup #theroot_interstitial_mc_signup_inner').height() + 'px');
+	    $('#theroot_interstitial_mc_signup_inner').fadeOut('slow', function() {
+	        $('#theroot_interstitial_mc_signup_message').html('To complete the sign up process, please click the link in the email we just sent to the email address you entered. It should arrive within 5 minutes.  &nbsp; <a id="theroot_interstitial_mc_signup_msg_ok" href="#">OK</a>.').fadeIn();
+	        $('#theroot_interstitial_mc_signup_msg_ok').click(function() {
+		        $('#theroot_interstitial_mc_signup_message').fadeOut('slow', function() {
+		            $('#theroot_interstitial_mc_signup_inner').fadeIn();
+		        });
+		        return false;
+	        });
+	    });
+        $('#mc-embedded-subscribe-form').each(function(){
+            this.reset();
+        });
+    } else {
+        var index = -1;
+        var msg;
+        try {
+            var parts = resp.msg.split(' - ',2);
+            if (parts[1]==undefined){
+                msg = resp.msg;
+            } else {
+                i = parseInt(parts[0]);
+                if (i.toString() == parts[0]){
+                    index = parts[0];
+                    msg = parts[1];
+                } else {
+                    index = -1;
+                    msg = resp.msg;
+                }
+            }
+        } catch(e){
+            index = -1;
+            msg = resp.msg;
+        }
+        try{
+            if (index== -1){
+		        $('#theroot_interstitial_mc_signup_inner').fadeOut('slow', function() {
+		            $('#theroot_interstitial_mc_signup_message').html('<div class="error">' + msg + ' &nbsp; <a id="theroot_mc_signup_msg_ok" href="#">OK</a>.</div>').fadeIn();
+		            $('#theroot_interstitial_mc_signup_msg_ok').click(function() {
+			            $('#theroot_interstitial_mc_signup_message').fadeOut('slow', function() {
+			                $('#theroot_interstitial_mc_signup_inner').fadeIn();
+			            });
+			            return false;
+		            });
+		        });
+            } else {
+                err_id = 'mce_tmp_error_msg';
+                html = '<div id="'+err_id+'" style="'+err_style+'"> '+msg+'</div>';
+
+                var input_id = '#mc_embed_signup';
+                var f = $(input_id);
+                if (ftypes[index]=='address'){
+                    input_id = '#mce-'+fnames[index]+'-addr1';
+                    f = $(input_id).parent().parent().get(0);
+                } else if (ftypes[index]=='date'){
+                    input_id = '#mce-'+fnames[index]+'-month';
+                    f = $(input_id).parent().parent().get(0);
+                } else {
+                    input_id = '#mce-'+fnames[index];
+                    f = $().parent(input_id).get(0);
+                }
+
+		        $('#theroot_interstitial_mc_signup_inner').fadeOut('slow', function() {
+		            $('#theroot_interstitial_mc_signup_message').html('<div class="error">' + msg + ' &nbsp; <a id="theroot_mc_signup_msg_ok" href="#">OK</a>.</div>').fadeIn();
+		            $('#theroot_interstitial_mc_signup_msg_ok').click(function() {
+			            $('#theroot_interstitial_mc_signup_message').fadeOut('slow', function() {
+			                $('#theroot_interstitial_mc_signup_inner').fadeIn();
+			            });
+			            return false;
+		            });
+		        });
+	        }
+        } catch(e) {
+		    $('#theroot_interstitial_mc_signup_inner').fadeOut('slow', function() {
+		        $('#theroot_interstitial_mc_signup_message').html('<div class="error">' + msg + ' &nbsp; <a id="theroot_mc_signup_msg_ok" href="#">OK</a>.</div>').fadeIn();
+		        $('#theroot_interstitial_mc_signup_msg_ok').click(function() {
+			        $('#theroot_interstitial_mc_signup_message').fadeOut('slow', function() {
+			            $('#theroot_interstitial_mc_signup_inner').fadeIn();
+			        });
+			        return false;
+		        });
+		    });
+        }
+    }
+}
+// ]]></script>
+</div>
+  
 </body>
 </html>
