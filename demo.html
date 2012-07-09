@@ -6,34 +6,97 @@
   <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
   <script type='text/javascript' src='resources/jquery.cookie.js'></script>
   <script type='text/javascript' src='jquery.roadblocked.js'></script>
+
+  <style type="text/css">
+   #interstitial-signup-form {
+     width: 350px;
+     height: 350px;
+     margin: auto;
+     text-align: center;
+     background: url(/demo_images/interstitial.png) transparent;
+     margin-top: 80px;
+     position: relative;
+   }
+
+    #interstitial-signup-error {
+      background-color:  #ffcccc;
+      border: solid #ffaaaa 2px;
+      padding: 5px;
+      margin: auto;
+      width: 250px;
+      display: none;
+    }
+
+    #interstitial-signup-email {
+        position: absolute;
+        left: 45px;
+        bottom: 20px;
+        border: solid 2px #999999;
+        padding: 5px;
+        width: 180px;
+    }
+
+    #interstitial-submit-image {
+        position: absolute;
+        bottom: 23px;
+        left: 250px;
+    }
+
+    #dismiss-bar {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        cursor: pointer;
+    }
+  </style>
   <script type='text/javascript'>
 
-function interstitialSignupForm() {
-    console.log('interstitialSignupForm');
-    var apikey = 'e5b9f0a1836dd061f0ebc63977483fc5-us1';
-    
-    var form_html = '<form id="interstitial-signup-form"><input type="text" name="interstitial-signup-email" id="interstitial-signup-email" /> <img id="interstitial-submit-image" src="foo.jpg" width="100" height="30" style="margin-bottom: -10px"/></form>';
+function trrb_interstitialSignupForm() {
+    var form_html = '<form id="interstitial-signup-form"><input type="text" name="interstitial-signup-email" id="interstitial-signup-email" /><img id="dismiss-bar" src="/demo_images/interstitial_dismiss.png" /> <img id="interstitial-submit-image" src="/demo_images/interstitial_go.png" width="31" height="26" /><div id="interstitial-signup-error">&nbsp;</div></form>';
 
-    var form = $(form_html).css({
-        'width': '400px',
-        'margin': 'auto',
-        'padding': '300px',
-        'background-color': 'transparent'
-    });
+    var form = $(form_html);
 
     var submit = function() {
-        alert('Go!');
+        $.getJSON('/mailchimp/subscribe/' + $('#interstitial-signup-email').val(), {}, function(d, s) {
+            //console.log(d);
+            $("#interstitial-signup-error").fadeOut();
+            if (d != true) {
+                $("#interstitial-signup-error").append(d.error).fadeIn();
+            } else {
+                $('#dismiss-bar').click();
+            }
+        });
     };
 
     $(this).find('#inter-content').css('text-align', 'center').append(form);
-    $('#interstitial-signup-email').css({
-        'padding': '8px',
-        'border': 'solid 1px black'
-    });
     $('#interstitial-signup-form').submit(submit);
     $('#interstitial-submit-image').click(submit);
-    
+    $('#dismiss-bar').click(function() {
+        $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast');
+        $('body').css('position','static');
+    });
 }
+
+
+function trrb_checkSource() {
+    var homepage = 'http://www.theroot.com/';
+    console.log("checkSource");
+    console.log(document.referrer);
+    return true;
+    if (!document.referrer) {
+        return false;
+    }
+    var referrer_noquery = document.referrer;
+    if (document.referrer.indexOf('?') > 0) {
+        referrer_noquery = document.referrer.substring(0, document.referrer.indexOf('?'));
+    }
+    console.log(referrer_noquery);
+
+    return ((document.referrer.indexOf("msn.com") != -1) ||
+            (referrer_noquery == homepage));
+}
+
+
 
   $(document).ready(function(){
   	$('body').roadblocked({
@@ -41,42 +104,24 @@ function interstitialSignupForm() {
         'tr-mag-interstitial-2': {
             'options': {
                 'devices': [ 'macintosh', 'iphone' ],
-  		        'imgPath' : 'demo_images',
+  		        'imgPath' : 'http://www.theroot.com/demo_images/',
   		        'lifetime' : 0,
-  		        'blackoutColor' : '#666',
-  		        'blackoutOpacity' : 0.75,
-  		        'dismissLabel' : 'dismiss_label.jpg',
-  		        'dismissLabelAlign' : 'center',
-  		        'dismissLabelHeight' : '7.5%'
+                'overlayBackgroundColor': '#000',
+                'blackout': false,
+                'scale': false,
+                
             },
             'triggers': [
-                { 'condition': function() { return true; }, 
-                  img:'android.jpg', 
-                  'execute': interstitialSignupForm
-                  // 'execute': function() { 
-                  //     console.log("Callback happened!");
-                  //     console.log(this);
-                      
-                  //     var form = $("#interstitial-content").detach().css({
-                  //         'width': '400px',
-                  //         'margin': 'auto',
-                  //         'background-color': 'white',
-                  //     });
-                      
-                  //     $(this).find('#inter-content').css('text-align', 'center').append(form);
-                  // }
-                },
-                { 'device' : 'macintosh', img:'iphone.jpg', link:'javascript:void(0)'},
-  			    { 'device' : 'iphone', img:'iphone.jpg', link:'http://itunes.apple.com/us/app/the-root/id385608483?mt=8'},
-  			    { 'device': 'ipod', img:'iphone.jpg', link: 'http://itunes.apple.com/us/app/the-root/id385608483?mt=8' },
-  			    { 'device': 'android', img:'android.jpg', link: 'https://market.android.com/details?id=com.wapo.theroot.android&hl=en' },
-  			    { 'device': 'ipad', img:'ipad.jpg', link: 'http://itunes.apple.com/us/app/the-root-for-ipad/id409360103?mt=8' }
+                { 'condition': trrb_checkSource,
+                  img:'interstitial.png',
+                  'execute': trrb_interstitialSignupForm
+                }
   		    ]
         },
   	});
   });
-  </script>		
-  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
+  </script>
+  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
        Remove this if you use the .htaccess -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>jQuery.Roadblocked Demo</title>
@@ -262,6 +307,6 @@ function int_mce_success_cb(resp){
 }
 // ]]></script>
 </div>
-  
+
 </body>
 </html>

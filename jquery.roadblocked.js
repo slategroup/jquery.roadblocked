@@ -1,11 +1,11 @@
 (function() {
 
   /*
-  jQuery.Roadblocked (0.1)
-  Rapidly implement device-targeted, landing interstitials for mobile + tablet visitors to your site.
-  Source: http://github.com/bsheldon/jquery.roadblocked by @ojogringo
-  Built from coffee-plate: http://github.com/pthrasher/coffee-plate by @philipthrasher
-  Requires: jquery, jquery-cookie
+      jQuery.Roadblocked (0.1)
+      Rapidly implement device-targeted, landing interstitials for mobile + tablet visitors to your site.
+      Source: http://github.com/bsheldon/jquery.roadblocked by @ojogringo
+      Built from coffee-plate: http://github.com/pthrasher/coffee-plate by @philipthrasher
+      Requires: jquery, jquery-cookie
   */
 
   var __hasProp = Object.prototype.hasOwnProperty;
@@ -50,7 +50,9 @@
         dismiss = buildDismissUI(data.options);
         content = _this.setContent(data.options, interstitial);
         link = interstitial['link'];
-        _this.placeInterstitial(data.options, dismiss, content, link, 'macintosh');
+        if (!(data.options.autoPlacement != null) || data.options.autoPlacement === true) {
+          _this.placeInterstitial(data.options, dismiss, content, link, 'macintosh');
+        }
         if (interstitial.execute != null) {
           interstitial.execute.call(_this.$el[0], interstitial);
         }
@@ -82,20 +84,22 @@
         blackout = $('<div\>', {
           id: 'roadblocked-blackout'
         });
-        blackout.css({
-          'background-color': options.blackoutColor,
-          'opacity': options.blackoutOpacity,
-          '-moz-opacity': options.blackoutOpacity,
-          'filter': 'alpha(opacity=' + (options.blackoutOpacity * 100) + ')',
-          'width': '100%',
-          'height': '100%',
-          'top': '0',
-          'left': '0',
-          'position': 'fixed',
-          'z-index': '100',
-          'margin': '0',
-          'display': 'block'
-        });
+        if (!(options.blackout != null) || options.blackout === true) {
+          blackout.css({
+            'background-color': options.blackoutColor,
+            'opacity': options.blackoutOpacity,
+            '-moz-opacity': options.blackoutOpacity,
+            'filter': 'alpha(opacity=' + (options.blackoutOpacity * 100) + ')',
+            'width': '100%',
+            'height': '100%',
+            'top': '0',
+            'left': '0',
+            'position': 'fixed',
+            'z-index': '100',
+            'margin': '0',
+            'display': 'block'
+          });
+        }
         container = $('<div\>', {
           id: 'roadblocked-container',
           "class": device
@@ -109,18 +113,22 @@
           'position': 'fixed',
           'z-index': '101',
           'margin': '0',
-          'display': 'block',
-          'cursor': 'pointer'
+          'display': 'block'
         });
+        if (link != null) container.css('cursor', 'pointer');
         $('body').prepend(blackout);
         $('body').prepend(container);
-        $('#roadblocked-container').prepend(dismiss);
-        if (options.dismissPlacement === 'top') {
-          $('#dismiss-bar').after(content);
-        } else if (options.dismissPlacement === 'bottom') {
-          $('#dismiss-bar').before(content);
+        if (dismiss != null) {
+          $('#roadblocked-container').prepend(dismiss);
+          if (options.dismissPlacement === 'top') {
+            $('#dismiss-bar').after(content);
+          } else if (options.dismissPlacement === 'bottom') {
+            $('#dismiss-bar').before(content);
+          } else {
+            $('#roadblocked-container').append(content);
+          }
         } else {
-          $('#dismiss-bar').after(content);
+          $('#roadblocked-container').append(content);
         }
         $('#dismiss-bar').click(function() {
           $('#roadblocked-container, #roadblocked-blackout').fadeOut('fast');
@@ -149,9 +157,11 @@
             'text-align': "" + options.dismissLabelAlign,
             'background-image': "url('" + options.imgPath + "/" + options.dismissLabel + "')",
             'background-position': "" + options.dismissLabelAlign,
-            'background-repeat': 'no-repeat',
-            'background-size': 'contain'
+            'background-repeat': 'no-repeat'
           });
+          if (!(options.scale != null) || options.scale === true) {
+            self.css('background-size', 'contain');
+          }
           return self;
         } else if (typeof dismissLabel === 'object') {
           dismissLabel.attr('id', 'dismiss-bar');
@@ -174,9 +184,11 @@
             'height': height,
             'width': '100%',
             'background-position': 'top',
-            'background-repeat': 'no-repeat',
-            'background-size': 'contain'
+            'background-repeat': 'no-repeat'
           });
+          if (!(options.scale != null) || options.scale === true) {
+            self.css('background-size', 'contain');
+          }
           if (interstitial['img'] != null) {
             self.css('background-image', "url('" + options.imgPath + "/" + interstitial['img'] + "')");
           }
